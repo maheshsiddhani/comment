@@ -1,0 +1,104 @@
+import React, {Component} from 'react'
+import './index.css'
+import CommentItem from '../CommentItem'
+
+class Comments extends Component {
+  state = {
+    name: '',
+    comment: '',
+    commentsList: [],
+  }
+
+  handleNameChange = event => {
+    this.setState({name: event.target.value})
+  }
+
+  handleCommentChange = event => {
+    this.setState({comment: event.target.value})
+  }
+
+  handleSubmit = event => {
+    event.preventDefault()
+    const {name, comment} = this.state
+    if (name && comment) {
+      const newComment = {
+        id: new Date().getTime(), // Generate a unique ID
+        name,
+        text: comment,
+        time: new Date().getTime(), // Add timestamp
+        isLiked: false, // Like state
+      }
+      this.setState(prevState => ({
+        commentsList: [...prevState.commentsList, newComment],
+        name: '',
+        comment: '',
+      }))
+    }
+  }
+
+  toggleLike = id => {
+    this.setState(prevState => ({
+      commentsList: prevState.commentsList.map(comment =>
+        comment.id === id ? {...comment, isLiked: !comment.isLiked} : comment,
+      ),
+    }))
+  }
+
+  deleteComment = id => {
+    this.setState(prevState => ({
+      commentsList: prevState.commentsList.filter(comment => comment.id !== id),
+    }))
+  }
+
+  render() {
+    const {name, comment, commentsList} = this.state
+    return (
+      <div className="main-container">
+        <div className="container">
+          <div className="sub-container">
+            <h1>Comments</h1>
+            <p>Say something about 4.0 technologies</p>
+            <form className="sub-container" onSubmit={this.handleSubmit}>
+              <input
+                placeholder="Your Name"
+                value={name}
+                onChange={this.handleNameChange}
+              />
+              <textarea
+                placeholder="Your Comment"
+                rows="6"
+                cols="30"
+                value={comment}
+                onChange={this.handleCommentChange}
+              />
+              <button onClick={this.handleSubmit}>Add Comment</button>
+            </form>
+          </div>
+          <img
+            src="https://assets.ccbp.in/frontend/react-js/comments-app/comments-img.png "
+            className="img"
+            alt="comments"
+          />
+        </div>
+        <hr />
+        <div>
+          <p>
+            <span>{commentsList.length}</span> comments
+          </p>
+          <ul>
+            {commentsList.map(item => (
+              <CommentItem
+                key={item.id}
+                details={item}
+                toggleLike={this.toggleLike}
+                deleteComment={this.deleteComment}
+              />
+            ))}
+          </ul>
+        </div>
+      </div>
+    )
+  }
+}
+
+export default Comments
