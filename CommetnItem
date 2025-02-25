@@ -1,0 +1,60 @@
+import './index.css'
+
+const CommentItem = ({details, toggleLike, deleteComment}) => {
+  const {id, name, text, time, isLiked} = details
+  const firstLetter = name.charAt(0).toUpperCase()
+
+  // Convert timestamp to "minutes ago"
+  const getTimeAgo = () => {
+    const now = new Date().getTime()
+    const diffInMinutes = Math.floor((now - time) / (1000 * 60))
+    if (diffInMinutes === 0) return 'less then a minute ago'
+    if (diffInMinutes === 1) return '1 minute ago'
+    return `${diffInMinutes} minutes ago`
+  }
+
+  return (
+    <li>
+      <div className="comment-item">
+        <div className={`avatar ${isLiked ? 'liked-avatar' : ''}`}>
+          {firstLetter}
+        </div>
+        <div className="comment-box">
+          <p className="time-text">{getTimeAgo()}</p>
+          <h2>{name}</h2>
+          <p>{text}</p>
+          <div className="actions">
+            <button
+              type="button"
+              className="like-btn"
+              onClick={() => toggleLike(id)}
+            >
+              <img
+                src={
+                  isLiked
+                    ? 'https://assets.ccbp.in/frontend/react-js/comments-app/liked-img.png'
+                    : 'https://assets.ccbp.in/frontend/react-js/comments-app/like-img.png'
+                }
+                alt="like"
+              />
+              Like
+            </button>
+            <button
+              type="button"
+              className="delete-btn"
+              onClick={() => deleteComment(id)}
+              data-testid="delete"
+            >
+              <img
+                src="https://assets.ccbp.in/frontend/react-js/comments-app/delete-img.png"
+                alt="delete"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </li>
+  )
+}
+
+export default CommentItem
